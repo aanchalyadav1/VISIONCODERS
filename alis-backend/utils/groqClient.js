@@ -6,14 +6,14 @@ const GROQ_KEY = process.env.GROQ_API_KEY;
 
 export async function callGroq(messages) {
   if (!GROQ_KEY) {
-    throw new Error("❌ GROQ_API_KEY missing in backend environment!");
+    throw new Error("❌ GROQ_API_KEY missing!");
   }
 
   try {
     const response = await axios.post(
-      "https://api.groq.com/openai/v1/chat/completions",  // ✔️ FINAL correct endpoint
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        model: "llama-3.1-70b-versatile",                 // ✔️ correct model
+        model: "llama-3.1-70b-versatile",
         messages,
       },
       {

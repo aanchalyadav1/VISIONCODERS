@@ -2,25 +2,31 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-const GROQ_KEY = process.env.GROQ_API_KEY || "";
+const GROQ_KEY = process.env.GROQ_API_KEY;
 
 export async function callGroq(messages) {
-  if (!GROQ_KEY) throw new Error("GROQ_API_KEY not set");
+  if (!GROQ_KEY) {
+    throw new Error("❌ GROQ_API_KEY missing in backend environment!");
+  }
 
-  // ✅ Correct Groq endpoint
-  const url = "https://api.groq.com/openai/v1/chat/completions";
+  try {
+    const response = await axios.post(
+      "https://api.groq.com/v1/chat/completions",     // ✔️ correct endpoint
+      {
+        model: "llama-3.1-70b-versatile",             // ✔️ correct model
+        messages,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${GROQ_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  const payload = {
-    model: "llama-3.1-70b-versatile",
-    messages
-  };
-
-  const resp = await axios.post(url, payload, {
-    headers: {
-      Authorization: `Bearer ${GROQ_KEY}`,
-      "Content-Type": "application/json"
-    }
-  });
-
-  return resp.data;
+    return response.data;
+  } catch (err) {
+    console.error("❌ GROQ API ERROR:", err.response?.data || err);
+    throw err;
+  }
 }

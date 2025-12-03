@@ -7,7 +7,11 @@ import { uploadFileToFirebase } from "../utils/storage.js";
 import { readDB, writeDB } from "../utils/storage.js";
 
 const router = express.Router();
-const upload = multer({ dest: path.join(process.cwd(), "backend", "uploads/") });
+
+// ✅ FIXED: Removed wrong "backend" folder
+const upload = multer({
+  dest: path.join(process.cwd(), "uploads")
+});
 
 router.post("/chat", async (req, res) => {
   try {
@@ -16,20 +20,31 @@ router.post("/chat", async (req, res) => {
     return res.json(result);
   } catch (err) {
     console.error("chat error", err);
-    return res.status(500).json({ error: "server error", details: String(err) });
+    return res
+      .status(500)
+      .json({ error: "server_error", details: String(err) });
   }
 });
 
 router.post("/upload-salary", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file" });
+
     const localPath = req.file.path;
     const destName = `salary_slips/${Date.now()}_${req.file.originalname}`;
+
     const publicUrl = await uploadFileToFirebase(localPath, destName);
+
     const db = await readDB();
     db.uploads = db.uploads || [];
-    db.uploads.push({ originalname: req.file.originalname, path: destName, url: publicUrl, ts: Date.now() });
+    db.uploads.push({
+      originalname: req.file.originalname,
+      path: destName,
+      url: publicUrl,
+      ts: Date.now()
+    });
     await writeDB(db);
+
     return res.json({ status: "uploaded", url: publicUrl });
   } catch (err) {
     console.error("upload error", err);
@@ -40,7 +55,13 @@ router.post("/upload-salary", upload.single("file"), async (req, res) => {
 router.post("/sanction", async (req, res) => {
   try {
     const { name, amount, interest, tenure, refId } = req.body;
-    const filePath = await generateSanctionPDF({ name, amount, interest, tenure, refId });
+    const filePath = await generateSanctionPDF({
+      name,
+      amount,
+      interest,
+      tenure,
+      refId
+    });
     return res.download(filePath);
   } catch (err) {
     console.error("sanction error", err);
@@ -51,8 +72,14 @@ router.post("/sanction", async (req, res) => {
 router.get("/admin/stats", async (req, res) => {
   try {
     const db = await readDB();
-    const sessionsCount = db.sessions ? Object.keys(db.sessions).length : 0;
-    return res.json({ sessions: sessionsCount, uploads: (db.uploads||[]).length });
+    const sessionsCount = db.sessions
+      ? Object.keys(db.sessions).length
+      : 0;
+
+    return res.json({
+      sessions: sessionsCount,
+      uploads: (db.uploads || []).length
+    });
   } catch (err) {
     return res.status(500).json({ error: "stats_error", details: String(err) });
   }

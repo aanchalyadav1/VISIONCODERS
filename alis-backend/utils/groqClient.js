@@ -11,9 +11,9 @@ export async function callGroq(messages) {
 
   try {
     const response = await axios.post(
-      "https://api.groq.com/v1/chat/completions",     // ✔️ correct endpoint
+      "https://api.groq.com/openai/v1/chat/completions",  // ✔️ FINAL correct endpoint
       {
-        model: "llama-3.1-70b-versatile",             // ✔️ correct model
+        model: "llama-3.1-70b-versatile",                 // ✔️ correct model
         messages,
       },
       {

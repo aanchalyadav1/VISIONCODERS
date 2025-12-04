@@ -1,14 +1,12 @@
-export async function salesAgent({ user } = {}) {
-  const base = 300000;
+// backend/agents/salesAgent.js
+export async function salesAgent({ user }) {
+  // simple deterministic sample offers
+  // In real product, use user's credit, salary etc. For now read DB in masterAgent before calling.
   const offers = [
-    { plan: "Standard", amount: Math.round(base * 0.9), interest: 12, tenure: 36 },
-    { plan: "Preferred", amount: base, interest: 11.5, tenure: 36 },
-    { plan: "Premium", amount: Math.round(base * 1.2), interest: 10.5, tenure: 48 }
+    { plan: "Micro", amount: 5000, interest: 18.0, tenureMonths: 6, emi: Math.round((5000 * (1 + 0.18)) / 6) },
+    { plan: "Personal-Small", amount: 25000, interest: 16.0, tenureMonths: 12, emi: Math.round((25000 * (1 + 0.16)) / 12) },
+    { plan: "Personal-Medium", amount: 150000, interest: 14.0, tenureMonths: 36, emi: Math.round((150000 * (1 + 0.14)) / 36) }
   ];
-  offers.forEach(o => {
-    const r = o.interest / 1200;
-    const n = o.tenure;
-    o.emi = Math.round((o.amount * r) / (1 - Math.pow(1 + r, -n)));
-  });
-  return { message: `Pre-approved offers for ${user?.name || ""}`, offers };
+
+  return { offers };
 }

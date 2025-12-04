@@ -1,5 +1,7 @@
+// backend/masterAgent.js
 import { v4 as uuidv4 } from "uuid";
 import { callGroq } from "./utils/groqClient.js";
+import { callGemini } from "./utils/geminiClient.js";
 import { verifyAgent } from "./agents/verifyAgent.js";
 import { underwritingAgent } from "./agents/underwritingAgent.js";
 import { salesAgent } from "./agents/salesAgent.js";
@@ -22,6 +24,7 @@ export async function masterChat({ message = "", sessionId = null, user = { name
 
   const low = (message || "").toLowerCase();
 
+  // routing to agents
   if (low.includes("pan") || low.includes("verify")) {
     const r = await verifyAgent(message);
     db.sessions[sessionId].history.push({ role: "verify", result: r, ts: Date.now() });
@@ -51,15 +54,33 @@ export async function masterChat({ message = "", sessionId = null, user = { name
     return { sessionId, agent: "SanctionAgent", pdfInfo: r };
   }
 
+  // Default: call primary LLM then fallback to Gemini then to canned reply
+  const prompt = [{ role: "user", content: `You are ALIS - helpful loan assistant. Answer: ${message}` }];
+
   try {
-    const prompt = [{ role: "user", content: `You are ALIS - helpful loan assistant. Answer: ${message}` }];
     const groqResp = await callGroq(prompt);
-    const text = groqResp?.choices?.[0]?.message?.content || "I'm sorry, I couldn't process that right now.";
-    db.sessions[sessionId].history.push({ role: "master", reply: text, ts: Date.now() });
-    await writeDB(db);
-    return { sessionId, agent: "MasterAgent(Groq)", reply: text };
-  } catch (err) {
-    console.error("groq error", err);
-    return { sessionId, agent: "MasterAgent", reply: "Service temporarily unavailable. Try again." };
+    // groq normal response mapping
+    const text = groqResp?.choices?.[0]?.message?.content || groqResp?.choices?.[0]?.text || groqResp?.result?.content || null;
+    if (text) {
+      db.sessions[sessionId].history.push({ role: "master", reply: text, ts: Date.now() });
+      await writeDB(db);
+      return { sessionId, agent: "MasterAgent(Groq)", reply: text };
+    }
+    throw new Error("No text from groq");
+  } catch (gerr) {
+    console.warn("GROQ failed, falling back to Gemini", gerr?.message || gerr);
+    try {
+      const gemResp = await callGemini(`You are ALIS - helpful loan assistant. Answer: ${message}`);
+      const text = gemResp?.text || "Sorry, temporarily unavailable.";
+      db.sessions[sessionId].history.push({ role: "master", reply: text, ts: Date.now() });
+      await writeDB(db);
+      return { sessionId, agent: "MasterAgent(Gemini)", reply: text };
+    } catch (g2) {
+      console.error("Both LLMs failed", g2);
+      const fallback = "Service temporarily unavailable. Try again later or ask a simpler question.";
+      db.sessions[sessionId].history.push({ role: "master", reply: fallback, ts: Date.now() });
+      await writeDB(db);
+      return { sessionId, agent: "MasterAgent", reply: fallback };
+    }
   }
 }

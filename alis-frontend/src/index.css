@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Background hologram logo fix */
+body {
+  background: #05060a;
+  background-image: url('/bg_logo.png');
+  background-repeat: no-repeat;
+  background-size: 420px;
+  background-position: top right;
+  opacity: 1;
+  overflow-x: hidden;
+}

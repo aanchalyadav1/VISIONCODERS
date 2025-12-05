@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import '../styles.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000';
 
@@ -10,43 +11,55 @@ export default function Dashboard(){
   },[]);
   return (
     <div className="page-bg dashboard-page">
-      <div className="container">
-        <div className="card">
-          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-            <div>
-              <h2 className="text-lg font-semibold">Admin Dashboard</h2>
-              <div style={{color:'var(--muted)', marginTop:6}}>Monitoring ALIS demo usage</div>
-            </div>
-            <div>
-              <button className="btn">Export</button>
-            </div>
-          </div>
+      <div className="nebula" aria-hidden="true"></div>
 
-          <div className="stats mt-4">
-            <div className="stat">
-              <h3>{stats.sessions}</h3>
-              <p>Active sessions</p>
-            </div>
-            <div className="stat">
-              <h3>{stats.uploads}</h3>
-              <p>Uploads</p>
-            </div>
-            <div className="stat">
-              <h3>₹ 5k+</h3>
-              <p>Typical demo loan range (tuned for India)</p>
-            </div>
-            <div className="stat">
-              <h3>LOW / MEDIUM</h3>
-              <p>Default risk buckets used in demo</p>
-            </div>
-          </div>
+      <div className="container" style={{display:'flex', gap:20}}>
+        <div className="left-sidebar card">
+          <div style={{fontWeight:800}}>Admin</div>
+          <div style={{marginTop:12, color:'var(--muted)'}}>Agents</div>
+          <ul style={{marginTop:12, paddingLeft:16, color:'var(--muted)'}}>
+            <li>UnderwritingAgent</li>
+            <li>VerificationAgent</li>
+            <li>SalesAgent</li>
+          </ul>
+        </div>
 
-          <div className="card mt-6">
-            <h4>Insights</h4>
-            <p style={{color:'var(--muted)', marginTop:8}}>This dashboard is for demo monitoring. For production, connect a database and analytics pipeline to collect richer metrics (conversion, approvals, decline reasons).</p>
+        <div style={{flex:1}}>
+          <div className="card">
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+              <div>
+                <h2 style={{margin:0}}>Admin Dashboard</h2>
+                <div style={{color:'var(--muted)', marginTop:6}}>Monitoring ALIS demo usage</div>
+              </div>
+              <button className="btn-ghost">Export</button>
+            </div>
+
+            <div className="stats mt-4">
+              <div className="stat">
+                <div className="count">{stats.sessions ?? 0}</div>
+                <p>Active sessions</p>
+              </div>
+              <div className="stat">
+                <div className="count">{stats.uploads ?? 0}</div>
+                <p>Uploads</p>
+              </div>
+              <div className="stat">
+                <div className="count">₹ 5k+</div>
+                <p>Typical demo loan range</p>
+              </div>
+              <div className="stat">
+                <div className="count">LOW / MED</div>
+                <p>Default risk buckets</p>
+              </div>
+            </div>
+
+            <div className="card mt-4">
+              <h4 style={{margin:0}}>Insights</h4>
+              <p style={{color:'var(--muted)', marginTop:10}}>This dashboard is for demo monitoring. For production, connect a DB + analytics pipeline.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

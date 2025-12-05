@@ -1,42 +1,34 @@
 import React from 'react';
+import '../styles.css';
 
 export default function About(){
   return (
     <div className="page-bg about-page">
+      <div className="nebula" aria-hidden="true"></div>
+
       <div className="container">
         <div className="card about-grid">
           <div>
-            <h2 className="text-lg font-semibold">About ALIS</h2>
-            <p style={{color:'var(--muted)', marginTop:8}}>ALIS (Agentic Loan Intelligence System) is a multi-agent demo built by VisionCoders for the EY Techathon. It demonstrates a compact, explainable lending flow suitable for micro, retail and MSME use-cases in India.</p>
+            <h2 style={{margin:0}}>About ALIS</h2>
+            <p style={{color:'var(--muted)', marginTop:12}}>ALIS is a multi-agent AI loan assistant built by VisionCoders for EY Techathon. It orchestrates verification, underwriting and sanction generation.</p>
 
-            <div className="about-team mt-4">
-              <h4>Design goals</h4>
-              <ul style={{color:'var(--muted)', marginTop:8}}>
-                <li>Fast, auditable verification (PAN format checks, salary slips)</li>
-                <li>Simple underwriting tuned for low-ticket loans (₹5k–₹5L)</li>
-                <li>Downloadable sanction letters with branding & reference IDs</li>
-              </ul>
+            <div className="mt-4">
+              <h4>Technical architecture</h4>
+              <p style={{color:'var(--muted)'}}>Multi-agent microservices talk to scoring & verification modules and generate audit-ready PDFs.</p>
             </div>
 
-            <div style={{marginTop:12}}>
-              <h4>Team — VisionCoders</h4>
-              <p style={{color:'var(--muted)'}}>We built ALIS to show how multiple small intelligent agents can be stitched into a practical product. Good for hackathons and quick prototyping.</p>
+            <div className="mt-4">
+              <h4>Mission</h4>
+              <p style={{color:'var(--muted)'}}>Make fast, fair, auditable credit decisions for micro and retail borrowers.</p>
             </div>
           </div>
 
-          <div>
-            <div className="card">
-              <h4>Tech stack</h4>
-              <ul style={{color:'var(--muted)', marginTop:8}}>
-                <li>React (frontend)</li>
-                <li>Express (backend)</li>
-                <li>Firebase storage + auth for demos</li>
-                <li>Generative/LLM layer (Groq/Gemini/OpenAI) — pluggable</li>
-              </ul>
-            </div>
-          </div>
+          <aside className="card" style={{background:'linear-gradient(90deg,var(--primary),var(--accent2))', color:'#071019'}}>
+            <div style={{fontWeight:900, fontSize:20}}>VisionCoders</div>
+            <div style={{marginTop:8}}>Where vision meets innovation — building practical AI solutions for the real world.</div>
+          </aside>
         </div>
       </div>
     </div>
-  )
+  );
 }

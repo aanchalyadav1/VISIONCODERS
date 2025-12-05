@@ -1,4 +1,5 @@
-/* styles.css — full replacement for ALIS UI */
+/* styles.css — full replacement for ALIS UI (drop into src/styles.css) */
+
 /* Theme + variables */
 :root{
   --bg: #05060a;
@@ -42,7 +43,7 @@ nav.container{
   justify-content:space-between;
   gap:12px;
   position:relative;
-  z-index:40;
+  z-index:80;
   padding:10px 0;
 }
 .logo{ width:64px; height:64px; border-radius:10px; object-fit:contain; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
@@ -63,12 +64,15 @@ nav.container::before{
 
 /* Basic card style (glass) */
 .card{
+  position:relative;
+  z-index:30;
   background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.015));
   border-radius:14px;
   padding:18px;
   border:1px solid var(--glass-border);
   box-shadow: 0 8px 28px rgba(0,0,0,0.6);
   color:var(--text);
+  overflow:hidden;
 }
 
 /* Buttons */
@@ -134,21 +138,31 @@ nav.container::before{
 /* Page backgrounds — uses your uploaded images (exact filenames) */
 .page-bg{ min-height:calc(100vh - 32px); background-size:cover; background-position:center; background-repeat:no-repeat; position:relative; overflow:hidden; }
 
+/* Global dim layer for backgrounds (to reduce dominance) */
+.page-bg::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: rgba(2,4,8,0.56);   /* strong dimming layer */
+  z-index:0;
+  pointer-events:none;
+}
+
 /* Landing (hero knight) — tall vertical dramatic */
-.landing-page{ background-image: url('/bg/hero_knight_bg.jpg'); background-attachment:fixed; }
-.landing-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(5,6,10,0.6), rgba(5,6,10,0.88)); pointer-events:none; }
+.landing-page{ background-image: url('/bg/hero_knight_bg.jpg'); background-attachment:fixed; background-position:center top; }
+.landing-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(5,6,10,0.6), rgba(5,6,10,0.88)); pointer-events:none; z-index:1; }
 
 /* Chat (eye) - centered eye behind content */
 .chat-page{ background-image: url('/bg/eye_bg.jpg'); background-size:cover; background-position:center top; }
-.chat-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(4,8,15,0.6), rgba(4,8,15,0.86)); pointer-events:none; }
+.chat-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(4,8,15,0.6), rgba(4,8,15,0.86)); pointer-events:none; z-index:1; }
 
 /* About (robot) */
 .about-page{ background-image: url('/bg/robot_bg.jpg'); background-size:cover; background-position:center; }
-.about-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(2,7,12,0.55), rgba(2,7,12,0.82)); pointer-events:none; }
+.about-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(2,7,12,0.55), rgba(2,7,12,0.82)); pointer-events:none; z-index:1; }
 
 /* Dashboard (wings) */
 .dashboard-page{ background-image: url('/bg/wings_bg.jpg'); background-size:cover; background-position:center; }
-.dashboard-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(2,7,12,0.5), rgba(2,7,12,0.86)); pointer-events:none; }
+.dashboard-page::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(2,7,12,0.5), rgba(2,7,12,0.86)); pointer-events:none; z-index:1; }
 
 /* Secondary sections (orbit watermark) */
 .section-orbit{ background-image: url('/bg/orbit_bg.jpg'); background-size:contain; background-position:right top; background-repeat:no-repeat; opacity:0.12; }
@@ -164,10 +178,11 @@ nav .nav-links a{ padding:8px 12px; border-radius:10px; color:var(--text); text-
   align-items:center;
   gap:40px;
   position:relative;
-  z-index:2;
+  z-index:3;
+  padding-bottom:28px;
 }
-.hero-left{ flex:1; max-width:720px; padding:24px; }
-.hero-title{ font-size:42px; font-weight:900; line-height:1.02; letter-spacing:-0.6px; margin:0; text-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+.hero-left{ flex:1; max-width:720px; padding:24px; margin-top:8px; }
+.hero-title{ font-size:42px; font-weight:900; line-height:1.02; letter-spacing:-0.6px; margin:12px 0 0 0; text-shadow: 0 8px 30px rgba(0,0,0,0.6); }
 .hero-lead{ margin-top:12px; color:var(--muted); font-size:16px; max-width:640px; }
 
 /* feature cards row */
@@ -206,7 +221,7 @@ nav .nav-links a{ padding:8px 12px; border-radius:10px; color:var(--text); text-
   width:420px;
   height:180px;
   border-radius:24px;
-  background: radial-gradient(circle, rgba(139,92,246,0.14), rgba(255,183,3,0.08), transparent 60%);
+  background: radial-gradient(circle, rgba(139,92,246,0.12), rgba(255,183,3,0.06), transparent 60%);
   filter: blur(28px);
   z-index:0;
   transition:opacity .2s;
@@ -216,11 +231,11 @@ nav .nav-links a{ padding:8px 12px; border-radius:10px; color:var(--text); text-
 .nebula{
   position: absolute;
   inset: -10% -10%;
-  background: radial-gradient(circle at 30% 20%, rgba(6,182,212,0.06) 0%, transparent 20%),
-              radial-gradient(circle at 70% 80%, rgba(139,92,246,0.04) 0%, transparent 25%);
-  animation: floatNebula 18s linear infinite alternate;
+  background: radial-gradient(circle at 30% 20%, rgba(6,182,212,0.04) 0%, transparent 20%),
+              radial-gradient(circle at 70% 80%, rgba(139,92,246,0.03) 0%, transparent 25%);
+  animation: floatNebula 20s linear infinite alternate;
   pointer-events:none;
-  z-index:1;
+  z-index:2;
 }
 @keyframes floatNebula{
   0%{ transform: translateY(0) scale(1) rotate(0deg) }
@@ -259,6 +274,7 @@ nav .nav-links a{ padding:8px 12px; border-radius:10px; color:var(--text); text-
   height:calc(100vh - 120px);
   position:sticky;
   top:60px;
+  z-index:28;
 }
 
 /* helpers and spacing */

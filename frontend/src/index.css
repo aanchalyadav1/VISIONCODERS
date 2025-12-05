@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global background and AI nebula effects */
+body {
+  background-color: #05060a;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  transition: background-image 0.6s ease, background-position 0.3s ease-out;
+  overflow-x: hidden;
+}
+
+/* Glass UI global card style */
+.card-glass {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}

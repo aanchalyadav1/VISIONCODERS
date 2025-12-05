@@ -1,4 +1,3 @@
-// Chat.jsx (improved layout + background usage)
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { auth } from '../firebase';
